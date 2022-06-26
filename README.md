@@ -1,2 +1,2 @@
 # palladium
-BASIC transpiler
+BASIC transpiler based on SilverCreator
