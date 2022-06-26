@@ -1,0 +1,90 @@
+<S> = statement_block
+
+<statement_block> = <wsn> statement <wsn> (<"\n"> <wsn> statement)*
+
+<statement> = (let / dim / call-stmt) | for | if | return
+
+dim = <"DIM"> <ws> identifier <ws> expression
+
+return = <"RETURN"> <ws> expression?
+
+let = (<"LET"> <ws> identifier <ws> <"="> <ws> expression <ws>)
+    | (<"LET"> <ws> identifier <ws> <"["> <ws> expression <ws> <"]"> <ws> <"="> <ws> expression <ws>)
+
+for = <"FOR"> <ws> identifier <ws> <"="> <ws> expression <ws> <"TO"> <ws> expression <ws> <"\n"> statement_block <"\n"> <ws> <"NEXT">
+
+call-stmt = identifier <ws> <"(">? arglist? <ws> <")">?
+
+then = statement_block
+
+else = statement_block
+
+if = (<"IF"> <ws> expression <ws> <"THEN"> <ws> statement)
+   | (<"IF"> <ws> expression <ws> <"THEN"> <ws> <"\n"> then <ws> <"\n"> <wsn> <"END"> <ws> <"IF">)
+   | (<"IF"> <ws> expression <ws> <"THEN"> <ws> <"\n"> then <wsn> <"ELSE"> else <ws> <"\n"> <wsn> <"END"> <ws> <"IF">)
+
+<expression> = or-exp
+
+<ws> = #" |\t"*
+
+<wsn> = #" |\t|\n"*
+
+<or-exp> = or | and-exp
+
+or = or-exp <ws> <"OR"> <ws> and-exp
+
+<and-exp> = and | comp
+
+and = and-exp <ws> <"AND"> <ws> comp
+
+<comp> = gt | lt | neq | eq | gteq | lteq | add-sub
+
+gt = comp <ws> <">"> <ws> add-sub
+
+lt = comp <ws> <"<"> <ws> add-sub
+
+neq = comp <ws> <"<>"> <ws> add-sub
+
+eq = comp <ws> <"="> <ws> add-sub
+
+gteq = comp <ws> <">="> <ws> add-sub
+
+lteq = comp <ws> <"<="> <ws> add-sub
+
+<add-sub> = mult-div | add | sub
+
+add = add-sub <ws> <"+"> <ws> mult-div
+
+sub = add-sub <ws> <"-"> <ws> mult-div
+
+<mult-div> = factor | mult | div
+
+mult = mult-div <ws> <"*"> <ws> factor
+
+div = mult-div <ws> <"/"> <ws> factor
+
+<factor> = ((true | false) / identifier) | literal | not | call | array_get | <"("> <ws> expression <ws> <")">
+
+true = <"TRUE">
+
+false = <"FALSE">
+
+array_get = identifier <ws> <"["> <ws> expression <ws> <"]">
+
+call = identifier <ws> <"("> arglist? <")">
+
+arglist = expression <ws> (<","> <ws> expression)*
+
+not = <"NOT"> <ws> factor
+
+identifier = <ws> #"([a-zA-Z]|_)(\w|_)*\$?"
+
+<literal> = <ws> number | <ws> string
+
+true = <"TRUE">
+
+false = <"FALSE">
+
+number = #"\d+(\.\d+)?"
+
+string = <'"'> #'([^"]|"")*' <'"'>
